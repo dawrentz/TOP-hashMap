@@ -12,8 +12,6 @@ export class HashMap {
   //need haspMap array?
   hashMap = [];
   loadFactor = 0.75;
-  //do i rebuild if need grow? as in:
-  // "on each set() call, if loadFactor * size > capacity, make copy of hashMap, clear hashMap, update capacity, loop through and run all again"
   capacity = 16;
 
   //from TOP
@@ -32,11 +30,11 @@ export class HashMap {
   //do i rebuild if need grow? as in:
   // "on each set() call, if loadFactor * size > capacity, make copy of hashMap, clear hashMap, update capacity, loop through and run all again"
   set(key, value) {
+    //can't declare bucket because updates only affect the local variable, need update array directly
+    // let bucket = this.hashMap[hashCode];
     const hashCode = this.hash(key);
 
     //need check for grow buckets!!!!!!!
-
-    let bucket = this.hashMap[hashCode];
 
     if (!this.hashMap[hashCode]) {
       this.hashMap[hashCode] = new linkedListMod.LinkedList();
@@ -46,8 +44,36 @@ export class HashMap {
 
     this.hashMap[hashCode].append({ key, value });
 
+    if (key === "lion") {
+      console.log("lion here");
+      console.log(this.hashMap);
+      console.log(hashCode);
+    }
+
     //test
     return this.hashMap;
+  }
+
+  get(key) {
+    const hashCode = this.hash(key);
+    const bucket = this.hashMap[hashCode];
+
+    if (!bucket) return null;
+
+    //else crawl through linkedList checking for key match
+    const searchResult = this.searchLLforValue(bucket, key);
+
+    return searchResult;
+
+    // console.log(bucket.at(0).value.key);
+  }
+
+  searchLLforValue(LL, searchValue, index = 0) {
+    const bucketSize = LL.size();
+
+    if (index > bucketSize) return null;
+    if (LL.at(index).value.key === searchValue) return LL.at(index).value.value;
+    return this.searchLLforValue(LL, searchValue, ++index);
   }
 }
 
@@ -55,6 +81,10 @@ export class HashMap {
 
 const test = new HashMap(); // or HashMap() if using a factory
 
+//placed at top to ensure empty bucket test
+console.log("===================== get =====================");
+console.log("waffles");
+console.log(test.get("waffles"));
 console.log("===================== hash =====================");
 console.log("banana");
 console.log(test.hash("banana"));
@@ -81,8 +111,12 @@ test.set("hat", "black");
 test.set("ice cream", "white");
 test.set("jacket", "blue");
 test.set("kite", "pink");
-console.log(test.set("lion", "golden"));
+test.set("lion", "golden");
+
+console.log("===================== get =====================");
+console.log("lion");
+console.log(test.get("lion"));
 
 console.log("===================== hashMap =====================");
 const x = test.hashMap;
-console.log(x);
+console.log(x[12].at(0));
