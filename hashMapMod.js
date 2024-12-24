@@ -30,21 +30,34 @@ export class HashMap {
   //do i rebuild if need grow? as in:
   // "on each set() call, if loadFactor * size > capacity, make copy of hashMap, clear hashMap, update capacity, loop through and run all again"
   set(key, value) {
-    //can't declare bucket because updates only affect the local variable, need update array directly
-    // let bucket = this.hashMap[hashCode];
     const hashCode = this.hash(key);
+    //can't use "bucket" when updating the hashMap because updates only affect the local variable, need update array directly
+    //but bucket is usefull in a few spots
+    const bucket = this.hashMap[hashCode];
 
-    //need check for grow buckets!!!!!!!
+    //need check for grow buckets!!!!!!!=======================================================
 
+    //need make bucket a linked list if empty
     if (!this.hashMap[hashCode]) {
       this.hashMap[hashCode] = new linkedListMod.LinkedList();
     }
 
-    //need check for if value exists then overwrite!!!!!!!!!!
+    // check if key exists, then overwrite
+    if (this.has(key)) {
+      const indexToChange = this.searchLLforIndex(bucket, key);
+      //can't use "bucket", must use this.hashMap[hashCode] to update array
+      //use at() with found index because the "bucket" is a linked list
+      //first .value is from "value/nextNode", second .value is from "key/value", last "value" ( = value ) is from the set() method arguments
+      this.hashMap[hashCode].at(indexToChange).value.value = value;
+    }
 
-    this.hashMap[hashCode].append({ key, value });
+    //else just append to linkedList in bucket
+    else {
+      this.hashMap[hashCode].append({ key, value });
+    }
   }
 
+  //gets value pair from key input
   get(key) {
     const bucket = this.hashMap[this.hash(key)];
 
@@ -52,6 +65,7 @@ export class HashMap {
     return this.searchLLforValue(bucket, key);
   }
 
+  //boolean hashmap has key input
   has(key) {
     if (this.get(key) === null) return false;
     return true;
@@ -150,6 +164,9 @@ export class HashMap {
 
 const test = new HashMap(); // or HashMap() if using a factory
 
+console.log(
+  "========================================== NEW =========================================="
+);
 //placed at top to ensure empty bucket test
 console.log("===================== get =====================");
 console.log("waffles");
@@ -165,7 +182,6 @@ console.log(
     "banananananananananananananananananananananananananananananananana"
   )
 );
-console.log("===================== set =====================");
 test.set("apple", "red");
 test.set("banana", "yellow");
 test.set("carrot", "orange");
@@ -178,6 +194,8 @@ test.set("ice cream", "white");
 test.set("jacket", "blue");
 test.set("kite", "pink");
 test.set("lion", "golden");
+test.set("kite", "purple");
+test.set("kite", "maroon");
 
 console.log("===================== get =====================");
 console.log("lion");
