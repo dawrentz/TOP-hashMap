@@ -35,7 +35,9 @@ export class HashMap {
     //but bucket is usefull in a few spots
     const bucket = this.hashMap[hashCode];
 
-    //need check for grow buckets!!!!!!!=======================================================
+    //test
+    console.log("length");
+    console.log(this.length());
 
     //need make bucket a linked list if empty
     if (!this.hashMap[hashCode]) {
@@ -54,6 +56,17 @@ export class HashMap {
     //else just append to linkedList in bucket
     else {
       this.hashMap[hashCode].append({ key, value });
+    }
+
+    //check for need grow
+    if (this.length() > this.loadFactor * this.capacity) {
+      const allEntries = this.entries();
+      this.clear();
+      this.capacity = this.capacity * 2;
+
+      allEntries.forEach((entry) => {
+        this.set(entry[0], entry[1]);
+      });
     }
   }
 
@@ -82,6 +95,7 @@ export class HashMap {
     return true;
   }
 
+  //number of keys in hashMap
   length() {
     let totalLength = 0;
 
@@ -227,11 +241,43 @@ console.log("===================== entries =====================");
 console.table(test.entries());
 
 console.log("===================== hashMap =====================");
-const x = test.hashMap;
-console.table(x);
-// console.log(x[12].at(0));
+console.log(test.hashMap);
 
-console.log("===================== clear =====================");
-test.clear();
-console.log("length: " + test.length());
+// console.log("===================== clear =====================");
+// test.clear();
+// console.log("length: " + test.length());
+// console.log(test.hashMap);
+
+console.log("===================== add =====================");
+console.log("lion");
+test.set("lion", "golden");
+console.table(test.entries());
+
+console.log("moon");
+test.set("moon", "silver");
+
+test.set("moon1", "silver");
+test.set("moon2", "silver");
+test.set("moon3", "silver");
+test.set("moon4", "silver");
+test.set("moon5", "silver");
+test.set("moon6", "silver");
+test.set("moon7", "silver");
+test.set("moon8", "silver");
+test.set("moon9", "silver");
+test.set("moon10", "silver");
+test.set("moon11", "silver");
+// test.set("moon12", "silver");
+// test.set("moon13", "silver");
+// test.set("moon14", "silver");
+// test.set("moon15", "silver");
+// test.set("moon16", "silver");
+// test.set("moon17", "silver");
+// test.set("moon18", "silver");
+// test.set("moon19", "silver");
+// test.set("moon20", "silver");
+// test.set("moon21", "silver");
+// test.set("moon22", "silver");
+
+console.table(test.entries());
 console.log(test.hashMap);
