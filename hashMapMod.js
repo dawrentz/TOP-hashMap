@@ -43,37 +43,41 @@ export class HashMap {
     //need check for if value exists then overwrite!!!!!!!!!!
 
     this.hashMap[hashCode].append({ key, value });
-
-    if (key === "lion") {
-      console.log("lion here");
-      console.log(this.hashMap);
-      console.log(hashCode);
-    }
-
-    //test
-    return this.hashMap;
   }
 
   get(key) {
-    const hashCode = this.hash(key);
-    const bucket = this.hashMap[hashCode];
+    const bucket = this.hashMap[this.hash(key)];
 
     if (!bucket) return null;
+    return this.searchLLforValue(bucket, key);
+  }
 
-    //else crawl through linkedList checking for key match
-    const searchResult = this.searchLLforValue(bucket, key);
+  has(key) {
+    if (this.get(key) === null) return false;
+    return true;
+  }
 
-    return searchResult;
+  remove(key) {
+    if (!this.has(key)) return false;
 
-    // console.log(bucket.at(0).value.key);
+    const hashCode = this.hash(key);
+    const bucket = this.hashMap[hashCode];
+    const indexToDel = this.searchLLforIndex(bucket, key);
+
+    this.hashMap[hashCode].removeAt(indexToDel);
   }
 
   searchLLforValue(LL, searchValue, index = 0) {
     const bucketSize = LL.size();
 
-    if (index > bucketSize) return null;
+    if (index > bucketSize - 1) return null;
     if (LL.at(index).value.key === searchValue) return LL.at(index).value.value;
     return this.searchLLforValue(LL, searchValue, ++index);
+  }
+
+  searchLLforIndex(LL, searchValue, index = 0) {
+    if (LL.at(index).value.key === searchValue) return index;
+    return this.searchLLforIndex(LL, searchValue, ++index);
   }
 }
 
@@ -97,9 +101,6 @@ console.log(
   )
 );
 console.log("===================== set =====================");
-console.log("apple", "red");
-console.log(test.set("apple", "red"));
-
 test.set("apple", "red");
 test.set("banana", "yellow");
 test.set("carrot", "orange");
@@ -116,7 +117,21 @@ test.set("lion", "golden");
 console.log("===================== get =====================");
 console.log("lion");
 console.log(test.get("lion"));
+console.log("lions");
+console.log(test.get("lions"));
+
+console.log("===================== has =====================");
+console.log("hat");
+console.log(test.has("hat"));
+console.log("hats");
+console.log(test.has("hats"));
+
+console.log("===================== remove =====================");
+console.log("lion");
+test.remove("lion");
+console.log(test.hashMap);
 
 console.log("===================== hashMap =====================");
 const x = test.hashMap;
-console.log(x[12].at(0));
+console.table(x);
+// console.log(x[12].at(0));

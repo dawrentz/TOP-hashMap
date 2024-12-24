@@ -120,19 +120,56 @@ export class LinkedList {
 
   //node at index is shifted right, update leftNode pointer and newNode pointer
   insertAt(value, index) {
-    const newNode = Node(value);
-    const leftNode = this.at(index - 1);
-    const newRightNode = this.at(index);
+    //error handling
+    const maxIndex = this.size() - 1;
+    if (index > maxIndex || index < 0 || !Number.isInteger(index)) {
+      throw new Error(`Must input number between 0 and ${maxIndex}`);
+    }
 
-    leftNode.nextNode = newNode;
-    newNode.nextNode = newRightNode;
+    const newNode = Node(value);
+
+    //if head
+    if (index === 0) {
+      newNode.nextNode = this.head;
+      this.head = newNode;
+    }
+
+    //all others
+    else {
+      const leftNode = this.at(index - 1);
+      const newRightNode = this.at(index);
+
+      leftNode.nextNode = newNode;
+      newNode.nextNode = newRightNode;
+    }
   }
 
   //node at index is unlinked, update leftNode pointer
   removeAt(index) {
-    const leftNode = this.at(index - 1);
-    const rightNode = this.at(index + 1);
+    //error handling
+    const maxIndex = this.size() - 1;
+    if (index > maxIndex || index < 0 || !Number.isInteger(index)) {
+      throw new Error(`Must input number between 0 and ${maxIndex}`);
+    }
 
-    leftNode.nextNode = rightNode;
+    //if tail
+    if (this.at(index) === this.tail()) {
+      this.pop();
+      return;
+    }
+
+    //rightNode does not exist for tail
+    const rightNode = this.at(index + 1);
+    //if head
+    if (index === 0) {
+      this.head = rightNode;
+    }
+
+    //all others
+    else {
+      //left node does not exist for head
+      const leftNode = this.at(index - 1);
+      leftNode.nextNode = rightNode;
+    }
   }
 }
