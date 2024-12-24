@@ -65,6 +65,59 @@ export class HashMap {
     const indexToDel = this.searchLLforIndex(bucket, key);
 
     this.hashMap[hashCode].removeAt(indexToDel);
+    return true;
+  }
+
+  length() {
+    let totalLength = 0;
+
+    this.hashMap.forEach((bucket) => {
+      totalLength += bucket.size();
+    });
+
+    return totalLength;
+  }
+
+  clear() {
+    this.hashMap = [];
+  }
+
+  keys() {
+    let allArr = [];
+
+    this.hashMap.forEach((bucket) => {
+      const tempArr = this.returnInputInLL(bucket, "key");
+      allArr = allArr.concat(tempArr);
+    });
+
+    return allArr;
+  }
+
+  values() {
+    let allArr = [];
+
+    this.hashMap.forEach((bucket) => {
+      const tempArr = this.returnInputInLL(bucket, "value");
+      allArr = allArr.concat(tempArr);
+    });
+
+    return allArr;
+  }
+
+  entries() {
+    let allArr = [];
+    const allKeys = this.keys();
+    const allValues = this.values();
+
+    let count = 0;
+
+    //each array comes in the same order
+    allKeys.forEach((key) => {
+      let tempArr = [key].concat(allValues[count++]);
+      allArr.push(tempArr);
+    });
+
+    return allArr;
   }
 
   searchLLforValue(LL, searchValue, index = 0) {
@@ -78,6 +131,18 @@ export class HashMap {
   searchLLforIndex(LL, searchValue, index = 0) {
     if (LL.at(index).value.key === searchValue) return index;
     return this.searchLLforIndex(LL, searchValue, ++index);
+  }
+
+  returnInputInLL(LL, inputVal, index = 0) {
+    const bucketSize = LL.size();
+
+    if (index > bucketSize - 1) return [];
+    // if (LL.at(index).value.key === searchValue) return LL.at(index).value.value;
+    // return this.searchLLforValue(LL, searchValue, ++index);
+
+    return [LL.at(index).value[inputVal]].concat(
+      this.returnInputInLL(LL, inputVal, ++index)
+    );
   }
 }
 
@@ -128,10 +193,27 @@ console.log(test.has("hats"));
 
 console.log("===================== remove =====================");
 console.log("lion");
-test.remove("lion");
+console.log(test.remove("lion"));
 console.log(test.hashMap);
+
+console.log("===================== length =====================");
+console.log(test.length());
+
+console.log("===================== keys =====================");
+console.log(test.keys());
+
+console.log("===================== values =====================");
+console.log(test.values());
+
+console.log("===================== entries =====================");
+console.table(test.entries());
 
 console.log("===================== hashMap =====================");
 const x = test.hashMap;
 console.table(x);
 // console.log(x[12].at(0));
+
+console.log("===================== clear =====================");
+test.clear();
+console.log("length: " + test.length());
+console.log(test.hashMap);
